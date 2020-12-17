@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
      */
     private void initDataList() {
         //图片资源
-        int img[] = {R.mipmap.weathy, R.mipmap.tem, R.mipmap.hum};
+        int img[] = {R.mipmap.taiyang, R.mipmap.wendu, R.mipmap.shidu};
         String text[] = {"光敏","温度","湿度"};
         list = new ArrayList<Map<String, Object>>();
         for (int i = 0; i < 3; i++) {
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
 
     private void updateDataList(){
         list.clear();
-        int img[] = {R.mipmap.weathy, R.mipmap.tem, R.mipmap.hum};
+        int img[] = {R.mipmap.taiyang, R.mipmap.wendu, R.mipmap.shidu};
         String text[] = {"光敏","温度","湿度"};
         newlist = new ArrayList<Map<String, Object>>();
         for (int i = 0; i < 3; i++) {
