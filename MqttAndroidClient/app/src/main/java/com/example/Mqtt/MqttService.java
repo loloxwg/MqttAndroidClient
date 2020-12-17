@@ -26,8 +26,18 @@ public class MqttService extends Service{
         private static String host = "tcp://192.168.0.107:1883";
         private static String userName = "IOTuserName";
         private static String passWord = "IOTpassWord";
-        private static String sendTopic = "null/null/Actuator/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:5D/1/02";      //要发布的主题
-        private static String recTopic[] = {"null/null/Sensor/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:2E/0/01","null/null/Sensor/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:46/0/01","null/null/Sensor/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:46/1/01"};      //要订阅的主题
+//        private static String sendTopic=
+        private static String sendTopic[] ={
+                "null/null/Actuator/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:5D/1/02",
+                "null/null/Actuator/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:5D/2/02"
+        };      //要发布的主题
+        private static String recTopic[] = {
+                "null/null/Sensor/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:2E/0/01",
+                "null/null/Sensor/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:46/0/01",
+                "null/null/Sensor/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:46/1/01",
+                "null/null/Sensor/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:46/2/01",
+                "null/null/Sensor/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:46/3/01"
+        };      //要订阅的主题
         //private static String recTopic ="null/null/Gateway/00:09:C0:FF:EC:48/05";
         private static String clientId = "androidId";//客户端标识
         private IGetMessageCallBack IGetMessageCallBack;
@@ -46,15 +56,21 @@ public class MqttService extends Service{
         }
          //  主题是myTopic  消息质量等级 0  消息在服务器端不保存
         public static void publish(String msg){
-            String topic = MqttService.sendTopic;
-            try {
-                if (client != null){
-                    client.publish(topic, msg.getBytes(),0, false,null,null);
-                    Log.i("Publish","pubish mes is"+" "+ msg);
+            int i;
+            for (i=0;i<2;i++)
+            {
+                String topic = MqttService.sendTopic[i];
+                try {
+                    if (client != null){
+                        client.publish(topic, msg.getBytes(),0, false,null,null);
+                        Log.i("Publish","pubish mes is"+" "+ msg);
+                    }
+                } catch (MqttException e) {
+                    e.printStackTrace();
                 }
-            } catch (MqttException e) {
-                e.printStackTrace();
             }
+
+
         }
 
         private void init() {
@@ -70,7 +86,7 @@ public class MqttService extends Service{
             // 设置超时时间，单位：秒
             conOpt.setConnectionTimeout(10);
             // 心跳包发送间隔，单位：秒
-            conOpt.setKeepAliveInterval(20);
+            conOpt.setKeepAliveInterval(10);
             // 用户名
             conOpt.setUserName(userName);
             // 密码
@@ -80,23 +96,28 @@ public class MqttService extends Service{
             boolean doConnect = true;
             String message = "{\"terminal_uid\":\"" + clientId + "\"}";
             Log.e(getClass().getName(), "message是:" + message);
-            String topic = sendTopic;
-            Integer qos = 0;
-            Boolean retained = false;
-            if ((!message.equals("")) || (!topic.equals(""))) {
-                // 最后的遗嘱
-                // MQTT本身就是为信号不稳定的网络设计的，所以难免一些客户端会无故的和Broker断开连接。
-                //当客户端连接到Broker时，可以指定LWT，Broker会定期检测客户端是否有异常。
-                //当客户端异常掉线时，Broker就往连接时指定的topic里推送当时指定的LWT消息。
+            int i;
+            for (i=0;i<2;i++){
+                String topic = sendTopic[i];
+                Integer qos = 0;
+                Boolean retained = false;
+                if ((!message.equals("")) || (!topic.equals(""))) {
+                    // 最后的遗嘱
+                    // MQTT本身就是为信号不稳定的网络设计的，所以难免一些客户端会无故的和Broker断开连接。
+                    //当客户端连接到Broker时，可以指定LWT，Broker会定期检测客户端是否有异常。
+                    //当客户端异常掉线时，Broker就往连接时指定的topic里推送当时指定的LWT消息。
 
-                try {
-                    conOpt.setWill(topic, message.getBytes(), qos.intValue(), retained.booleanValue());
-                } catch (Exception e) {
-                    Log.i(TAG, "Exception Occured", e);
-                    doConnect = false;
-                    iMqttActionListener.onFailure(null, e);
+                    try {
+                        conOpt.setWill(topic, message.getBytes(), qos.intValue(), retained.booleanValue());
+                    } catch (Exception e) {
+                        Log.i(TAG, "Exception Occured", e);
+                        doConnect = false;
+                        iMqttActionListener.onFailure(null, e);
+                    }
                 }
+
             }
+
 
             if (doConnect) {
                 //连接Mqtt服务器
@@ -138,7 +159,7 @@ public class MqttService extends Service{
                 Log.i(TAG, "连接成功 ");
                 try {
                     // 订阅myTopic话题
-                    for(int i=0;i<3;i++)
+                    for(int i=0;i<5;i++)//change
                     client.subscribe(recTopic[i],1);
                 } catch (MqttException e) {
                     e.printStackTrace();
@@ -170,6 +191,14 @@ public class MqttService extends Service{
                     //湿度
                     else if(topic.equals("null/null/Sensor/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:46/1/01")){
                         IGetMessageCallBack.setMessage2(str1+"%");//调用activity中的setMessage();
+                    }
+//                    气体
+                    else if (topic.equals("null/null/Sensor/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:46/2/01")){
+                        IGetMessageCallBack.setMessage3(str1);
+                    }
+                    //人员
+                    else if (topic.equals("null/null/Sensor/00:09:C0:FF:EC:48/00:12:4B:00:06:1B:65:46/3/01")){
+                        IGetMessageCallBack.setMessage4(str1);
                     }
                     //IGetMessageCallBack.setMessage(str1);//调用activity中的setMessage();
                 }

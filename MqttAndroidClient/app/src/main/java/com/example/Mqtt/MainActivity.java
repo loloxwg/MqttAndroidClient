@@ -18,10 +18,11 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements IGetMessageCallBack {
 
     //    private TextView txt3,txt4,txt5;
-    private String str[]={"","",""};
+    private String str[]={"","","","",""};//change
     private SimpleAdapter adapter;
     private TextView txt;
     private Button button;
+    private Button button2;
     private ArrayList list,newlist;
     private ListView listView;
     private MyServiceConnection serviceConnection;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
 
         txt  = findViewById(R.id.item_content);
         button =  findViewById(R.id.button);
-
+        button2= findViewById(R.id.button2);
         listView = findViewById(R.id.lv);
         initDataList();
 
@@ -83,6 +84,21 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
                 }
             }
         });
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                j++;
+                if (j==1){
+                    MqttService.publish("2");
+                    button2.setBackgroundResource(R.mipmap.dianfengshan1);
+                }else if(j==2){
+                    MqttService.publish("3");
+                    button2.setBackgroundResource(R.mipmap.dianfengshan2);
+                    j=0;
+                }
+            }
+        });
     }
 
     @Override
@@ -102,7 +118,17 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
         str[2]=message;
         updateDataList();
     }
+    @Override
+    public void setMessage3(String message) {
+        str[3]=message;
+        updateDataList();
+    }
 
+    @Override
+    public void setMessage4(String message){
+        str[4]=message;
+        updateDataList();
+    }
     @Override
     protected void onDestroy() {
         unbindService(serviceConnection);
@@ -114,10 +140,10 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
      */
     private void initDataList() {
         //图片资源
-        int img[] = {R.mipmap.taiyang, R.mipmap.wendu, R.mipmap.shidu};
-        String text[] = {"光敏","温度","湿度"};
+        int img[] = {R.mipmap.taiyang, R.mipmap.wendu, R.mipmap.shidu,R.mipmap.qitizhengchang,R.mipmap.renyuan};
+        String text[] = {"光敏","温度","湿度","气体","人员"};
         list = new ArrayList<Map<String, Object>>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("img", img[i]);
             map.put("title",text[i]);
@@ -128,10 +154,10 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
 
     private void updateDataList(){
         list.clear();
-        int img[] = {R.mipmap.taiyang, R.mipmap.wendu, R.mipmap.shidu};
-        String text[] = {"光敏","温度","湿度"};
+        int img[] = {R.mipmap.taiyang, R.mipmap.wendu, R.mipmap.shidu,R.mipmap.qitizhengchang,R.mipmap.renyuan};
+        String text[] = {"光敏","温度","湿度","气体","人员"};
         newlist = new ArrayList<Map<String, Object>>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("img", img[i]);
             map.put("title",text[i]);
