@@ -2,6 +2,7 @@ package com.example.Mqtt;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +25,11 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
     private TextView txt;
     private Button button;
     private Button button2;
+    private Button button3;
+    private Button button4;
+    private Button button5;
+    private Button button6;
+    private Button button7;
     private ArrayList list,newlist;
     private ListView listView;
     private MyServiceConnection serviceConnection;
@@ -38,8 +45,13 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
 //        txt5 =  findViewById(R.id.txt5);
 
         txt  = findViewById(R.id.item_content);
-        button =  findViewById(R.id.button);
+        button = findViewById(R.id.button);
         button2= findViewById(R.id.button2);
+        button3= findViewById(R.id.button3);
+        button4= findViewById(R.id.button4);
+        button5= findViewById(R.id.button5);
+        button6= findViewById(R.id.button6);
+        button7= findViewById(R.id.button7);
         listView = findViewById(R.id.lv);
         initDataList();
 
@@ -69,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
 
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
-
+        //灯
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,14 +89,16 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
                 if (j == 1) {
                     MqttService.publish("0");
                     button.setBackgroundResource(R.mipmap.light3);
+                    Toast.makeText(MainActivity.this,"关灯",Toast.LENGTH_SHORT).show();
                 } else if (j == 2) {
                     MqttService.publish("1");
                     button.setBackgroundResource(R.mipmap.light);
+                    Toast.makeText(MainActivity.this,"开灯",Toast.LENGTH_SHORT).show();
                     j = 0;
                 }
             }
         });
-
+        //风扇
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,13 +106,83 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
                 if (j==1){
                     MqttService.publish("2");
                     button2.setBackgroundResource(R.mipmap.dianfengshan1);
+                    Toast.makeText(MainActivity.this,"关闭风扇",Toast.LENGTH_SHORT).show();
                 }else if(j==2){
                     MqttService.publish("3");
                     button2.setBackgroundResource(R.mipmap.dianfengshan2);
+                    Toast.makeText(MainActivity.this,"打开风扇",Toast.LENGTH_SHORT).show();
                     j=0;
                 }
             }
         });
+        //门锁
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                j++;
+                if(j==1){
+                    button3.setBackgroundResource(R.mipmap.mensuo);
+                    Toast.makeText(MainActivity.this,"5s后锁自动关闭",Toast.LENGTH_SHORT).show();
+                }else if(j==2){
+                    MqttService.publish("5");
+                    button3.setBackgroundResource(R.mipmap.mensuokai);
+                    Toast.makeText(MainActivity.this,"开锁",Toast.LENGTH_SHORT).show();
+                    j=0;
+                }
+            }
+        });
+        //刷新
+        button4.setOnClickListener((new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MqttService.publish("6");
+                Toast.makeText(MainActivity.this,"正在刷新监控数据",Toast.LENGTH_SHORT).show();
+            }
+        }));
+        //遥控电视
+        button5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                j++;
+                if (j==1){
+                    MqttService.publish("7");
+                    button5.setBackgroundResource(R.mipmap.yaokongpingmu);
+                    Toast.makeText(MainActivity.this,"关闭电视",Toast.LENGTH_SHORT).show();
+                }else if(j==2){
+                    MqttService.publish("8");
+                    button5.setBackgroundResource(R.mipmap.yaokongpingmu2);
+                    Toast.makeText(MainActivity.this,"打开电视",Toast.LENGTH_SHORT).show();
+                    j=0;
+                }
+            }
+        });
+        //遥控盒子
+        button6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                j++;
+                if (j==1){
+                    MqttService.publish("9");
+                    button6.setBackgroundResource(R.mipmap.yangkonghezi);
+                    Toast.makeText(MainActivity.this,"关闭电视盒子",Toast.LENGTH_SHORT).show();
+                }else if(j==2){
+                    MqttService.publish("10");
+                    button6.setBackgroundResource(R.mipmap.yangkonghezi2);
+                    Toast.makeText(MainActivity.this,"打开电视盒子",Toast.LENGTH_SHORT).show();
+                    j=0;
+                }
+            }
+        });
+        //web support
+        button7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("http://256356n7p7.wicp.vip"));
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
@@ -140,8 +224,8 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
      */
     private void initDataList() {
         //图片资源
-        int img[] = {R.mipmap.taiyang, R.mipmap.wendu, R.mipmap.shidu,R.mipmap.qitizhengchang,R.mipmap.renyuan};
-        String text[] = {"光敏","温度","湿度","气体","人员"};
+        int img[] = {R.mipmap.taiyang2, R.mipmap.wendu, R.mipmap.shidu,R.mipmap.qitizhengchang,R.mipmap.tianqi};
+        String text[] = {"光敏","温度","湿度","气体","天气"};
         list = new ArrayList<Map<String, Object>>();
         for (int i = 0; i < 5; i++) {
             Map<String, Object> map = new HashMap<String, Object>();
@@ -154,8 +238,8 @@ public class MainActivity extends AppCompatActivity implements IGetMessageCallBa
 
     private void updateDataList(){
         list.clear();
-        int img[] = {R.mipmap.taiyang, R.mipmap.wendu, R.mipmap.shidu,R.mipmap.qitizhengchang,R.mipmap.renyuan};
-        String text[] = {"光敏","温度","湿度","气体","人员"};
+        int img[] = {R.mipmap.taiyang2, R.mipmap.wendu, R.mipmap.shidu,R.mipmap.qitizhengchang,R.mipmap.tianqi};
+        String text[] = {"光敏","温度","湿度","气体","天气"};
         newlist = new ArrayList<Map<String, Object>>();
         for (int i = 0; i < 5; i++) {
             Map<String, Object> map = new HashMap<String, Object>();
