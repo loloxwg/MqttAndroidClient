@@ -14,7 +14,8 @@
         android:layout_width="80dp"
         android:layout_height="66dp"
         android:layout_centerHorizontal="true"
-        android:background="@mipmap/light" />
+        android:background="@mipmap/light" >
+    </Button>
     <Button
         android:id="@+id/button2"
         android:layout_width="80dp"
@@ -22,12 +23,59 @@
         android:background="@mipmap/dianfengshan1">
     </Button>
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_alignRight="@id/lv"
+        android:background="@mipmap/mensuo">
+
+    </Button>
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_alignBottom="@id/lv"
+        android:layout_marginBottom="-70dp"
+        android:background="@mipmap/f5">
+
+    </Button>
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-70dp"
+        android:layout_alignBottom="@id/lv"
+        android:background="@mipmap/yaokongpingmu">
+
+    </Button>
+    <Button
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:id="@+id/button6"
+        android:layout_marginBottom="-70dp"
+        android:layout_alignBottom="@id/lv"
+        android:layout_alignRight="@id/lv"
+        android:background="@mipmap/yangkonghezi">
+
+    </Button>
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_alignBottom="@id/button4"
+        android:layout_marginBottom="-70dp"
+        android:background="@mipmap/web">
+
+    </Button>
     <ListView
         android:id="@+id/lv"
         android:layout_width="match_parent"
-        android:layout_height="494dp"
+        android:layout_height="411dp"
         android:layout_below="@+id/button"
-        android:layout_marginTop="27dp">
+        android:layout_marginTop="39dp">
 
     </ListView>
 
